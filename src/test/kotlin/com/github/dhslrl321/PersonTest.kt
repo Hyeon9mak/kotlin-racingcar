@@ -1,7 +1,8 @@
 package com.github.dhslrl321
 
-import org.assertj.core.api.Assertions.assertThat
-
+import io.kotest.data.blocking.forAll
+import io.kotest.inspectors.forAll
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
 class PersonTest {
@@ -13,5 +14,10 @@ class PersonTest {
             Person(name = "jang", nickname = "j", age = 10),
         )
 
+        actual.forAll {
+            it.name shouldBe "jang"
+            it.age shouldBe 10
+            it.nickname shouldBe "j"
+        }
     }
 }

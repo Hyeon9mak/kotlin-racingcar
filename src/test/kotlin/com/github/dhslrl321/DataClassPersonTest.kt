@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test
 class DataClassPersonTest {
     @Test
     fun `data class`() {
-        val p1 = DataClassPerson("jang", 10, "j")
-        val p2 = DataClassPerson("jang", 10, "j")
+        val p1 = Person("jang", 10, "j")
+        val p2 = Person("jang", 10, "j")
 
         assertThat(p1).isEqualTo(p2)
     }
