@@ -1,48 +1,39 @@
 package com.github.dhslrl321.calc
 
 import java.lang.ArithmeticException
+import java.lang.IllegalArgumentException
+
+private const val FIRST_INDEX = 1
+private const val UNTIL_OPERAND = 2
 
 class Calculator {
-    fun calc(input: String): Int {
+    fun calc(input: String?): Int {
+        require(input.isNullOrBlank().not()) { "공백 혹은 빈 문자열은 안됨" }
 
-        val split = input.split(" ")
+        val operations = input!!.split(" ")
 
-        var acc = 0
-        var skip = false
-        for ((i, s) in split.withIndex()) {
-            if (isNumeric(s)) {
-                if (skip) {
-                    skip = false
-                    continue
-                }
-                acc = s.toInt()
-            } else {
-                when (s) {
-                    "+" -> {
-                        acc = acc.plus(split[i + 1].toInt())
-                        skip = true
-                    }
-                    "-" -> {
-                        acc = acc.minus(split[i + 1].toInt())
-                        skip = true
-                    }
-                    "/" -> {
-                        val operand = split[i + 1].toInt()
-                        if (operand == 0) {
-                            throw ArithmeticException("0으로 나누기가 불가능함")
-                        }
-                        acc = acc.div(operand)
-                        skip = true
-                    }
-                    "*" -> {
-                        acc = acc.times(split[i + 1].toInt())
-                        skip = true
-                    }
-                }
-            }
-        }
-        return acc
+        return evaluate(operations)
     }
 
-    private fun isNumeric(s: String): Boolean = s.toIntOrNull() != null
+    private fun evaluate(tokens: List<String>): Int {
+        val initial = tokens.first().toInt()
+
+        val operations = tokens.drop(FIRST_INDEX).chunked(UNTIL_OPERAND)
+
+        return operations.fold(initial) { accumulator, (operator, operand) ->
+            operate(accumulator, operator, operand.toInt())
+        }
+    }
+
+    private fun operate(acc: Int, operator: String, operand: Int): Int = when (operator) {
+        "+" -> acc + operand
+        "-" -> acc - operand
+        "*" -> acc * operand
+        "/" -> {
+            require(operand != 0) { throw ArithmeticException("0으로 나누기가 불가능함") }
+            acc / operand
+        }
+
+        else -> throw IllegalArgumentException("산술연산자가 아닙니다")
+    }
 }
