@@ -1,12 +1,15 @@
 package com.github.dhslrl321.calc
 
+import com.github.dhslrl321.calc.Operators.*
+import com.github.dhslrl321.calc.Operators.Companion.findBy
 import java.lang.ArithmeticException
 import java.lang.IllegalArgumentException
 
 private const val FIRST_INDEX = 1
 private const val UNTIL_OPERAND = 2
 
-class Calculator {
+
+object Calculator {
     fun calc(input: String?): Int {
         require(input.isNullOrBlank().not()) { "공백 혹은 빈 문자열은 안됨" }
 
@@ -25,11 +28,11 @@ class Calculator {
         }
     }
 
-    private fun operate(acc: Int, operator: String, operand: Int): Int = when (operator) {
-        "+" -> acc + operand
-        "-" -> acc - operand
-        "*" -> acc * operand
-        "/" -> {
+    private fun operate(acc: Int, operator: String, operand: Int): Int = when (findBy(operator)) {
+        PLUS -> acc + operand
+        MINUS -> acc - operand
+        MULTIPLY -> acc * operand
+        DIVIDE -> {
             require(operand != 0) { throw ArithmeticException("0으로 나누기가 불가능함") }
             acc / operand
         }
